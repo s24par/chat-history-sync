@@ -1,0 +1,85 @@
+{
+  "name": "chat-history-sync",
+  "displayName": "Chat History Sync",
+  "description": "Automatically saves Copilot Chat session history to your workspace",
+  "version": "0.0.1",
+  "publisher": "local-dev",
+  "engines": {
+    "vscode": "^1.100.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "chatHistorySync.saveNow",
+        "title": "Save Current Session Now",
+        "category": "Chat History"
+      },
+      {
+        "command": "chatHistorySync.toggleAutoSave",
+        "title": "Toggle Auto Save",
+        "category": "Chat History"
+      }
+    ],
+    "configuration": {
+      "title": "Chat History Sync",
+      "properties": {
+        "chatHistorySync.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable automatic saving of chat session history to the workspace."
+        },
+        "chatHistorySync.outputPath": {
+          "type": "string",
+          "default": ".chat-history",
+          "description": "Relative path within the workspace root where chat history files are saved."
+        },
+        "chatHistorySync.format": {
+          "type": "string",
+          "enum": ["md", "json"],
+          "enumDescriptions": ["Markdown (default)", "JSON"],
+          "default": "md",
+          "description": "Output format for saved chat history files."
+        },
+        "chatHistorySync.retention": {
+          "type": "string",
+          "enum": ["full", "output-only"],
+          "enumDescriptions": [
+            "Save both user input and assistant response (default)",
+            "Save assistant response only"
+          ],
+          "default": "full",
+          "description": "Controls how much of the conversation is retained in saved files."
+        },
+        "chatHistorySync.debounceMs": {
+          "type": "number",
+          "minimum": 0,
+          "default": 5000,
+          "description": "Milliseconds to wait after chat session file changes before syncing."
+        },
+        "chatHistorySync.minSyncIntervalMs": {
+          "type": "number",
+          "minimum": 0,
+          "default": 10000,
+          "description": "Minimum milliseconds between automatic sync runs per session file."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/node": "^20.x",
+    "@types/vscode": "^1.100.0",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1",
+    "typescript": "^5.x"
+  }
+}

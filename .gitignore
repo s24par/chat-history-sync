@@ -1,0 +1,24 @@
+# ----- Build outputs -----
+out/
+dist/
+
+# ----- Dependencies -----
+node_modules/
+
+# ----- Packaged extension -----
+*.vsix
+
+# ----- Dot directories (all excluded except .github) -----
+.*/ 
+!.github/
+
+# ----- OS generated -----
+.DS_Store
+Thumbs.db
+
+# ----- Logs -----
+*.log
+npm-debug.log*
+
+# ----- TypeScript cache -----
+*.tsbuildinfo
