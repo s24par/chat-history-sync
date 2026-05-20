@@ -184,6 +184,8 @@ When `both` is selected, the extension writes matching `.md` and `.json` files w
 ---
 
 ## Turn 1
+**Timestamp:** 2026-05-18T18:09:00.068Z
+**Request ID:** request_d3e4f5a6-b7c8-4d9e-...
 
 **User**
 
@@ -206,6 +208,7 @@ Here are the steps...
     {
       "turn": 1,
       "timestamp": "2026-05-18T18:09:00.068Z",
+      "requestId": "request_d3e4f5a6-b7c8-4d9e-...",
       "modelId": "copilot/auto",
       "user": "/create-instructions develop a vscode extension",
       "assistant": "Here are the steps..."

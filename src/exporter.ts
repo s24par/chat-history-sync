@@ -45,6 +45,11 @@ function buildMarkdown(session: ParsedSession, retention: 'full' | 'output-only'
     for (const turn of session.turns) {
         lines.push(`## Turn ${turn.turnIndex}`);
         lines.push('');
+        lines.push(`**Timestamp:** ${toIso(turn.timestamp)}`);
+        if (turn.requestId) {
+            lines.push(`**Request ID:** ${turn.requestId}`);
+        }
+        lines.push('');
 
         if (retention === 'full' && turn.userText) {
             lines.push('**User**');
@@ -54,9 +59,7 @@ function buildMarkdown(session: ParsedSession, retention: 'full' | 'output-only'
         }
 
         lines.push('**Copilot**');
-        if (turn.modelId) {
-            lines.push(`*Model: ${turn.modelId}*`);
-        }
+        lines.push(`*Model: ${turn.modelId || '(unknown)'}*`);
         lines.push('');
         lines.push(turn.assistantText || '*(no response text)*');
         lines.push('');
@@ -78,7 +81,8 @@ function buildJson(session: ParsedSession, retention: 'full' | 'output-only'): s
             const turn: Record<string, unknown> = {
                 turn: t.turnIndex,
                 timestamp: toIso(t.timestamp),
-                modelId: t.modelId,
+                requestId: t.requestId,
+                modelId: t.modelId || '(unknown)',
                 assistant: t.assistantText,
             };
             if (retention === 'full') {

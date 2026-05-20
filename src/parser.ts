@@ -243,13 +243,22 @@ export function parseSession(filePath: string): ParsedSession | null {
     const sessionId = baseState.sessionId ?? path.basename(filePath, '.jsonl');
     const title = (baseState.customTitle?.trim()) || sessionId;
     const createdAt = baseState.creationDate ?? Date.now();
-    const turns: SessionTurn[] = requests.map((req, idx) => ({
+    let turns: SessionTurn[] = requests.map((req, idx) => ({
         turnIndex: idx + 1,
         timestamp: req.timestamp ?? createdAt,
         requestId: req.requestId ?? '',
         userText: req.message?.text ?? '',
         assistantText: extractAssistantText(req.response ?? []),
         modelId: req.modelId ?? '',
+    }));
+
+    // Sort by timestamp to ensure correct order (fixes out-of-order turns from indexed patches)
+    turns.sort((a, b) => a.timestamp - b.timestamp);
+
+    // Re-assign turnIndex after sorting
+    turns = turns.map((turn, idx) => ({
+        ...turn,
+        turnIndex: idx + 1,
     }));
 
     return { sessionId, title, createdAt, turns, filePath };

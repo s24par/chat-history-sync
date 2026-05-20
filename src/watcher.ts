@@ -48,6 +48,18 @@ export class ChatSessionWatcher implements vscode.Disposable {
                     this.scheduleCallback(path.join(this.watchDir, filename));
                 }
             });
+
+            // Attach error handler to gracefully handle fs.watch errors (e.g. ENOSPC from inotify)
+            this.watcher.on('error', (err: NodeJS.ErrnoException) => {
+                this.output.appendLine(`[Watcher] fs.watch error: ${err.message} (${err.code})`);
+                this.output.appendLine('[Watcher] Attempting to restart watcher...');
+                // Close and restart to recover from transient errors
+                this.watcher?.close();
+                this.watcher = undefined;
+                // Wait before restarting to avoid tight loop
+                setTimeout(() => this.startWatcher(), 5000);
+            });
+
             this.output.appendLine(`[Watcher] Watching: ${this.watchDir}`);
         } catch (err) {
             this.output.appendLine(`[Watcher] Failed to start fs.watch: ${err}`);

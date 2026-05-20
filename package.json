@@ -2,14 +2,18 @@
   "name": "chat-history-sync",
   "displayName": "Chat History Sync",
   "description": "Automatically saves Copilot Chat session history to your workspace",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "local-dev",
   "engines": {
     "vscode": "^1.100.0",
     "node": ">=20"
   },
-  "categories": ["Other"],
-  "activationEvents": ["onStartupFinished"],
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./out/src/extension.js",
   "contributes": {
     "commands": [
@@ -39,14 +43,25 @@
         },
         "chatHistorySync.format": {
           "type": "string",
-          "enum": ["md", "json", "both"],
-          "enumDescriptions": ["Markdown (default)", "JSON", "Markdown and JSON"],
+          "enum": [
+            "md",
+            "json",
+            "both"
+          ],
+          "enumDescriptions": [
+            "Markdown (default)",
+            "JSON",
+            "Markdown and JSON"
+          ],
           "default": "md",
           "description": "Output format for saved chat history files. Use both to write Markdown and JSON copies."
         },
         "chatHistorySync.retention": {
           "type": "string",
-          "enum": ["full", "output-only"],
+          "enum": [
+            "full",
+            "output-only"
+          ],
           "enumDescriptions": [
             "Save both user input and assistant response (default)",
             "Save assistant response only"
@@ -87,5 +102,8 @@
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1",
     "typescript": "^5.x"
+  },
+  "dependencies": {
+    "@vscode/vsce": "^3.9.1"
   }
 }
