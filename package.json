@@ -34,7 +34,7 @@
         "chatHistorySync.outputPath": {
           "type": "string",
           "default": ".chat-history",
-          "description": "Relative path within the workspace root where chat history files are saved."
+          "description": "Relative path within the workspace root where chat history files are saved. Subdirectories are allowed."
         },
         "chatHistorySync.format": {
           "type": "string",

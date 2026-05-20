@@ -4,6 +4,7 @@ import * as os from 'os';
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { exportSession } from '../src/exporter';
+import { resolveOutputPath } from '../src/config';
 import type { ParsedSession } from '../src/parser';
 
 function createSampleSession(): ParsedSession {
@@ -56,12 +57,13 @@ suite('Chat History Sync', () => {
             const writtenFiles = await exportSession(
                 session,
                 vscode.Uri.file(tempDir),
-                'history',
+                'history/subdir',
                 'both',
                 'full',
             );
 
             assert.strictEqual(writtenFiles.length, 2);
+            assert.ok(writtenFiles.every(uri => uri.fsPath.includes(path.join('history', 'subdir'))));
 
             const fileNames = writtenFiles.map(uri => path.basename(uri.fsPath)).sort();
             assert.deepStrictEqual(fileNames, [
@@ -75,5 +77,12 @@ suite('Chat History Sync', () => {
         } finally {
             fs.rmSync(tempDir, { recursive: true, force: true });
         }
+    });
+
+    test('Output path traversal should be rejected', () => {
+        assert.throws(
+            () => resolveOutputPath('../escape'),
+            /must not escape the workspace root/i,
+        );
     });
 });

@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { resolveOutputPath } from './config';
 import { ParsedSession } from './parser';
 
 export type OutputFormat = 'md' | 'json' | 'both';
@@ -122,7 +123,7 @@ export async function exportSession(
     format: OutputFormat,
     retention: 'full' | 'output-only',
 ): Promise<vscode.Uri[]> {
-    const outputDir = vscode.Uri.joinPath(workspaceRoot, outputPath);
+    const outputDir = vscode.Uri.joinPath(workspaceRoot, resolveOutputPath(outputPath));
     await vscode.workspace.fs.createDirectory(outputDir);
 
     const formats: Exclude<OutputFormat, 'both'>[] = format === 'both' ? ['md', 'json'] : [format];

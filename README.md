@@ -118,7 +118,7 @@ Settings can be changed via `settings.json` or the VS Code Settings UI.
 | Key | Type | Default | Description |
 |---|---|---|---|
 | `chatHistorySync.enabled` | boolean | `true` | Enable or disable automatic saving |
-| `chatHistorySync.outputPath` | string | `.chat-history` | Output directory relative to the workspace root |
+| `chatHistorySync.outputPath` | string | `.chat-history` | Relative output path from the workspace root. Subdirectories are allowed. |
 | `chatHistorySync.format` | `md` \| `json` \| `both` | `md` | Output file format |
 | `chatHistorySync.retention` | `full` \| `output-only` | `full` | `full`: save user input + response / `output-only`: response only |
 | `chatHistorySync.debounceMs` | number | `5000` | Milliseconds to wait after a file change before syncing |
@@ -128,7 +128,7 @@ Settings can be changed via `settings.json` or the VS Code Settings UI.
 
 ```json
 {
-  "chatHistorySync.outputPath": "docs/chat-history",
+  "chatHistorySync.outputPath": "docs/chat-history/subdir",
   "chatHistorySync.format": "both",
   "chatHistorySync.retention": "full",
   "chatHistorySync.debounceMs": 5000,

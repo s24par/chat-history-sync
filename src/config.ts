@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import * as path from 'path';
 import type { OutputFormat } from './exporter';
 
 export const EXTENSION_ID = 'chatHistorySync';
@@ -21,7 +22,26 @@ export function setEnabled(value: boolean): Thenable<void> {
 }
 
 export function getOutputPath(): string {
-    return vscode.workspace.getConfiguration(EXTENSION_ID).get<string>('outputPath', '.chat-history');
+    const value = vscode.workspace.getConfiguration(EXTENSION_ID).get<string>('outputPath', '.chat-history');
+    return resolveOutputPath(value);
+}
+
+export function resolveOutputPath(outputPath: string): string {
+    const trimmed = outputPath.trim();
+    if (trimmed.length === 0) {
+        throw new Error('Output path cannot be empty.');
+    }
+
+    const normalized = path.normalize(trimmed);
+    if (path.isAbsolute(normalized)) {
+        throw new Error('Output path must be relative to the workspace root.');
+    }
+
+    if (normalized === '..' || normalized.startsWith(`..${path.sep}`)) {
+        throw new Error('Output path must not escape the workspace root.');
+    }
+
+    return normalized;
 }
 
 export function getFormat(): OutputFormat {
