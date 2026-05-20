@@ -73,7 +73,12 @@
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile",
-    "test": "vscode-test"
+    "test": "vscode-test",
+    "package:vsix": "npm run compile && npx @vscode/vsce package",
+    "release:patch": "npm version patch",
+    "release:minor": "npm version minor",
+    "release:major": "npm version major",
+    "version": "npm run package:vsix"
   },
   "devDependencies": {
     "@types/node": "^20.x",

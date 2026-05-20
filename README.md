@@ -1,5 +1,7 @@
 # Chat History Sync
 
+Language: English | [日本語](README.ja.md)
+
 A VS Code extension that automatically saves GitHub Copilot Chat session history to your workspace.
 
 ## Features
@@ -16,63 +18,81 @@ A VS Code extension that automatically saves GitHub Copilot Chat session history
 
 ## Installation
 
-### For Users
+This project uses the following distribution flow:
 
-Install the pre-built extension — no `npm install` or `npm run compile` required.
+1. Developer builds the extension and generates a `.vsix`
+2. That `.vsix` file is distributed as the release artifact
+3. User installs the `.vsix` from the Command Palette
 
-#### Option 1: Install from VSIX
+### 1. Developer: Build and package VSIX
 
-1. Obtain the distributed `.vsix` file
-2. Open the VS Code Command Palette
-3. Run `Extensions: Install from VSIX...`
-4. Select the `.vsix` file and reload VS Code
+This repository currently contains **source code only**.
+No pre-built `.vsix` is bundled in the project files.
 
-#### Option 2: Manual folder placement
+Requirements:
 
-If you have the pre-built extension folder, place it in the extensions directory for your OS:
-
-| OS | Path |
-|---|---|
-| Linux / macOS | `~/.vscode/extensions/` |
-| Windows | `%USERPROFILE%\.vscode\extensions\` |
-
-Restart VS Code after placing the folder.
-
-> Cloning this repository as-is gives you the source code only.  
-> Without a build step, it cannot be used for user installation.
-
-### For Developers
-
-Use the following steps if you want to edit the source code or run the extension in the Extension Development Host.
-
-**Additional requirements:**
 - Node.js 20 or later
 - npm
 
-#### Setup
+Build and package:
 
 ```bash
-# Clone the repository
-git clone <repository-url>
-cd extention
-
-# Install dependencies
 npm install
-
-# Compile TypeScript
 npm run compile
+npx @vscode/vsce package
 ```
 
-#### Load in VS Code
+This creates a VSIX file such as `chat-history-sync-0.0.1.vsix`.
+
+### 2. Developer: Release automation (minimal)
+
+Minimal release flow is based on `npm version`.
+
+1. Ensure your working tree is clean and committed
+2. Run one of the release commands
+3. `package.json` version is updated
+4. Git commit and tag are created automatically
+5. VSIX is generated via the `version` lifecycle script
+
+Commands:
+
+```bash
+npm run release:patch
+# or
+npm run release:minor
+# or
+npm run release:major
+```
+
+Push release commit and tag:
+
+```bash
+git push
+git push --tags
+```
+
+### 3. User: Install distributed VSIX
+
+Install from the Command Palette:
+
+1. Open Command Palette
+2. Run `Extensions: Install from VSIX...`
+3. Select the distributed `.vsix` file
+4. Reload VS Code if prompted
+
+CLI alternative:
+
+```bash
+code --install-extension <vsix-file>
+```
+
+### Development-only run (without VSIX install)
+
+If you want to test changes locally without packaging, run in Extension Development Host:
 
 1. Open this folder in VS Code
-2. Press **F5** (or go to **Run** → **Start Debugging**)
+2. Press **F5** (or go to **Run** -> **Start Debugging**)
 3. An Extension Development Host window will open with the extension active
-
-#### Building a VSIX for distribution
-
-To install into a regular VS Code instance, package with `vsce package` and then install via
-`Extensions: Install from VSIX...` in the Command Palette.
 
 ## Usage
 
