@@ -7,3 +7,18 @@ test/**
 node_modules/**
 tsconfig.json
 .vscode-test.mjs
+
+# Dotfiles and dot-directories (local/VCS/environment)
+.*
+.*/**
+
+# OS generated files
+Thumbs.db
+
+# Packaged artifacts and logs
+*.vsix
+*.log
+
+# Project helper scripts/docs not needed at runtime
+analyze_chat*.js
+README.ja.md
