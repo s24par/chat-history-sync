@@ -9,7 +9,7 @@
   },
   "categories": ["Other"],
   "activationEvents": ["onStartupFinished"],
-  "main": "./out/extension.js",
+  "main": "./out/src/extension.js",
   "contributes": {
     "commands": [
       {
@@ -38,10 +38,10 @@
         },
         "chatHistorySync.format": {
           "type": "string",
-          "enum": ["md", "json"],
-          "enumDescriptions": ["Markdown (default)", "JSON"],
+          "enum": ["md", "json", "both"],
+          "enumDescriptions": ["Markdown (default)", "JSON", "Markdown and JSON"],
           "default": "md",
-          "description": "Output format for saved chat history files."
+          "description": "Output format for saved chat history files. Use both to write Markdown and JSON copies."
         },
         "chatHistorySync.retention": {
           "type": "string",

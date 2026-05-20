@@ -1,6 +1,8 @@
 import * as vscode from 'vscode';
 import { ParsedSession } from './parser';
 
+export type OutputFormat = 'md' | 'json' | 'both';
+
 // ---------- Helpers ----------
 
 function sanitizeFileName(name: string): string {
@@ -89,20 +91,12 @@ function buildJson(session: ParsedSession, retention: 'full' | 'output-only'): s
 
 // ---------- Public API ----------
 
-/**
- * Serializes a parsed session to the configured format and writes it to the
- * workspace output directory. Returns the URI of the written file.
- */
-export async function exportSession(
+async function writeSessionFile(
     session: ParsedSession,
-    workspaceRoot: vscode.Uri,
-    outputPath: string,
-    format: 'md' | 'json',
+    outputDir: vscode.Uri,
+    format: Exclude<OutputFormat, 'both'>,
     retention: 'full' | 'output-only',
 ): Promise<vscode.Uri> {
-    const outputDir = vscode.Uri.joinPath(workspaceRoot, outputPath);
-    await vscode.workspace.fs.createDirectory(outputDir);
-
     const safeName = sanitizeFileName(session.title);
     const stamp = datePart(session.createdAt);
     const idSuffix = sessionSuffix(session.sessionId);
@@ -115,4 +109,28 @@ export async function exportSession(
 
     await vscode.workspace.fs.writeFile(fileUri, Buffer.from(content, 'utf-8'));
     return fileUri;
+}
+
+/**
+ * Serializes a parsed session to the configured format and writes it to the
+ * workspace output directory. Returns the URI of the written file.
+ */
+export async function exportSession(
+    session: ParsedSession,
+    workspaceRoot: vscode.Uri,
+    outputPath: string,
+    format: OutputFormat,
+    retention: 'full' | 'output-only',
+): Promise<vscode.Uri[]> {
+    const outputDir = vscode.Uri.joinPath(workspaceRoot, outputPath);
+    await vscode.workspace.fs.createDirectory(outputDir);
+
+    const formats: Exclude<OutputFormat, 'both'>[] = format === 'both' ? ['md', 'json'] : [format];
+    const writtenFiles: vscode.Uri[] = [];
+
+    for (const currentFormat of formats) {
+        writtenFiles.push(await writeSessionFile(session, outputDir, currentFormat, retention));
+    }
+
+    return writtenFiles;
 }

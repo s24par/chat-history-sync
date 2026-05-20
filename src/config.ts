@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import type { OutputFormat } from './exporter';
 
 export const EXTENSION_ID = 'chatHistorySync';
 
@@ -23,8 +24,8 @@ export function getOutputPath(): string {
     return vscode.workspace.getConfiguration(EXTENSION_ID).get<string>('outputPath', '.chat-history');
 }
 
-export function getFormat(): 'md' | 'json' {
-    return vscode.workspace.getConfiguration(EXTENSION_ID).get<'md' | 'json'>('format', 'md');
+export function getFormat(): OutputFormat {
+    return vscode.workspace.getConfiguration(EXTENSION_ID).get<OutputFormat>('format', 'md');
 }
 
 export function getRetention(): 'full' | 'output-only' {

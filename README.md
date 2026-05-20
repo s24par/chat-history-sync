@@ -7,7 +7,7 @@ A VS Code extension that automatically saves GitHub Copilot Chat session history
 - **Auto Save**: Monitors Copilot Chat session files and automatically exports conversations to your workspace whenever they are updated
 - **Manual Save**: Instantly save all current sessions from the Command Palette
 - **Status Bar**: Toggle auto-save ON/OFF with a single click on the icon in the bottom-right corner
-- **Output Format**: Choose between Markdown (default) or JSON
+- **Output Format**: Choose between Markdown (default), JSON, or both
 - **Retention**: Save both user input and Copilot responses, or responses only
 
 ## Requirements
@@ -119,7 +119,7 @@ Settings can be changed via `settings.json` or the VS Code Settings UI.
 |---|---|---|---|
 | `chatHistorySync.enabled` | boolean | `true` | Enable or disable automatic saving |
 | `chatHistorySync.outputPath` | string | `.chat-history` | Output directory relative to the workspace root |
-| `chatHistorySync.format` | `md` \| `json` | `md` | Output file format |
+| `chatHistorySync.format` | `md` \| `json` \| `both` | `md` | Output file format |
 | `chatHistorySync.retention` | `full` \| `output-only` | `full` | `full`: save user input + response / `output-only`: response only |
 | `chatHistorySync.debounceMs` | number | `5000` | Milliseconds to wait after a file change before syncing |
 | `chatHistorySync.minSyncIntervalMs` | number | `10000` | Minimum milliseconds between automatic syncs per session file |
@@ -129,12 +129,14 @@ Settings can be changed via `settings.json` or the VS Code Settings UI.
 ```json
 {
   "chatHistorySync.outputPath": "docs/chat-history",
-  "chatHistorySync.format": "md",
+  "chatHistorySync.format": "both",
   "chatHistorySync.retention": "full",
   "chatHistorySync.debounceMs": 5000,
   "chatHistorySync.minSyncIntervalMs": 10000
 }
 ```
+
+When `both` is selected, the extension writes matching `.md` and `.json` files with the same base name.
 
 ## Output Examples
 

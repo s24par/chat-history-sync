@@ -37,14 +37,17 @@ async function syncSession(filePath: string): Promise<void> {
     }
 
     try {
-        const fileUri = await exportSession(
+        const fileUris = await exportSession(
             session,
             folders[0].uri,
             config.getOutputPath(),
             config.getFormat(),
             config.getRetention(),
         );
-        output.appendLine(`[Sync] Saved: ${fileUri.fsPath}`);
+        output.appendLine(`[Sync] Saved ${fileUris.length} file(s):`);
+        for (const fileUri of fileUris) {
+            output.appendLine(`  - ${fileUri.fsPath}`);
+        }
     } catch (err) {
         output.appendLine(`[Sync] Error writing file: ${err}`);
     }
@@ -62,42 +65,48 @@ export function activate(context: vscode.ExtensionContext): void {
 
     // context.storageUri = workspaceStorage/{workspaceId}/{extensionId}/
     // The chatSessions directory is one level up from the extension's storage dir.
-    if (!context.storageUri) {
-        output.appendLine('[Init] No workspace storage URI available. Extension inactive.');
-        return;
-    }
+    const watchDir = context.storageUri
+        ? path.join(path.dirname(context.storageUri.fsPath), 'chatSessions')
+        : undefined;
 
-    const watchDir = path.join(path.dirname(context.storageUri.fsPath), 'chatSessions');
-    output.appendLine(`[Init] chatSessions path: ${watchDir}`);
+    if (watchDir) {
+        output.appendLine(`[Init] chatSessions path: ${watchDir}`);
 
-    const watcher = new ChatSessionWatcher(watchDir, output, config.getDebounceMs());
-    context.subscriptions.push(watcher);
+        const watcher = new ChatSessionWatcher(watchDir, output, config.getDebounceMs());
+        context.subscriptions.push(watcher);
 
-    watcher.onDidChange(filePath => {
-        if (config.isEnabled()) {
-            const minSyncIntervalMs = config.getMinSyncIntervalMs();
-            const now = Date.now();
-            const previous = lastSyncAt.get(filePath) ?? 0;
-            const elapsed = now - previous;
+        watcher.onDidChange(filePath => {
+            if (config.isEnabled()) {
+                const minSyncIntervalMs = config.getMinSyncIntervalMs();
+                const now = Date.now();
+                const previous = lastSyncAt.get(filePath) ?? 0;
+                const elapsed = now - previous;
 
-            if (previous > 0 && elapsed < minSyncIntervalMs) {
-                output.appendLine(
-                    `[Sync] Skipped: ${path.basename(filePath)} (${elapsed}ms < min ${minSyncIntervalMs}ms)`
+                if (previous > 0 && elapsed < minSyncIntervalMs) {
+                    output.appendLine(
+                        `[Sync] Skipped: ${path.basename(filePath)} (${elapsed}ms < min ${minSyncIntervalMs}ms)`
+                    );
+                    return;
+                }
+
+                lastSyncAt.set(filePath, now);
+                syncSession(filePath).catch(err =>
+                    output.appendLine(`[Sync] Unhandled error: ${err}`)
                 );
-                return;
             }
+        });
 
-            lastSyncAt.set(filePath, now);
-            syncSession(filePath).catch(err =>
-                output.appendLine(`[Sync] Unhandled error: ${err}`)
-            );
-        }
-    });
-
-    watcher.start();
+        watcher.start();
+    } else {
+        output.appendLine('[Init] No workspace storage URI available. Watcher inactive.');
+    }
 
     context.subscriptions.push(
         vscode.commands.registerCommand('chatHistorySync.saveNow', async () => {
+            if (!watchDir) {
+                vscode.window.showWarningMessage('Chat History Sync: No workspace storage URI is available.');
+                return;
+            }
             const folders = vscode.workspace.workspaceFolders;
             if (!folders) {
                 vscode.window.showWarningMessage('Chat History Sync: No workspace folder is open.');
