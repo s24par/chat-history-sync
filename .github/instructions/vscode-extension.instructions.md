@@ -15,3 +15,10 @@ applyTo: ["src/**/*.ts", "test/**/*.ts", "package.json", "tsconfig.json", "**/*.
 - Log operational details through a dedicated output channel, and keep user-facing notifications concise.
 - Keep `package.json` contributions, activation events, and implementation synchronized in the same change.
 - Follow least-privilege principles for configuration and file access.
+
+## Security Audit Alert Handling
+
+- Run dependency audit checks before release work (`npm audit --omit=dev` and `npm audit`).
+- Treat runtime dependency vulnerabilities as release blockers until fixed or explicitly accepted.
+- For dev-only vulnerabilities, document risk and track upstream fixes; avoid forced overrides unless necessary.
+- Re-run audit checks after dependency updates and record the result in the related PR or commit notes.

@@ -1,7 +1,5 @@
 # Chat History Sync
 
-Language: English | [日本語](README.ja.md)
-
 A VS Code extension that automatically saves GitHub Copilot Chat session history to your workspace.
 
 ## Features
@@ -14,6 +12,7 @@ A VS Code extension that automatically saves GitHub Copilot Chat session history
 
 ## Requirements
 
+- Node.js 20 or later
 - VS Code 1.100.0 or later
 
 ## Installation
@@ -93,6 +92,20 @@ If you want to test changes locally without packaging, run in Extension Developm
 1. Open this folder in VS Code
 2. Press **F5** (or go to **Run** -> **Start Debugging**)
 3. An Extension Development Host window will open with the extension active
+
+### Troubleshooting
+
+If VSIX packaging fails with engine mismatch errors, check your Node.js version first.
+
+- Required: Node.js 20 or later
+- Check current version: `node -v`
+
+If you use nvm:
+
+- `nvm install 20`
+- `nvm use 20`
+
+If nvm is not installed, upgrade Node.js with your OS package manager.
 
 ## Usage
 

@@ -1,7 +1,5 @@
 # Chat History Sync
 
-言語: 日本語 | [English](README.md)
-
 GitHub Copilot Chat のセッション履歴をワークスペースへ自動保存する VS Code 拡張機能です。
 
 ## 機能
@@ -14,6 +12,7 @@ GitHub Copilot Chat のセッション履歴をワークスペースへ自動保
 
 ## 要件
 
+- Node.js 20 以降
 - VS Code 1.100.0 以降
 
 ## インストール
@@ -93,6 +92,20 @@ code --install-extension <vsix-file>
 1. このフォルダーを VS Code で開く
 2. F5 を押す（または Run -> Start Debugging）
 3. Extension Development Host が起動し、拡張機能が有効化
+
+### トラブルシュート
+
+VSIX 作成時に engine mismatch などのエラーが出る場合は、まず Node.js のバージョンを確認してください。
+
+- 必須: Node.js 20 以降
+- 確認コマンド: `node -v`
+
+nvm を使う場合:
+
+- `nvm install 20`
+- `nvm use 20`
+
+nvm が未導入の場合は、OS のパッケージマネージャー等で Node.js を更新してください。
 
 ## 使い方
 
